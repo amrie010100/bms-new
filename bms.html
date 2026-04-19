@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Bisnis Model Canvas - Kopi Bubuk Nusantara</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Poppins', system-ui, -apple-system, 'Inter', sans-serif;
+            background: #f7f3e9;  /* fallback warna hangat */
+            /* background dari online source: tekstur kopi halus dengan warna earthy */
+            background-image: url('https://www.transparenttextures.com/patterns/coffee.png');
+            background-repeat: repeat;
+            background-attachment: fixed;
+            background-color: #3e2a1f;
+            padding: 2rem 1.5rem;
+            color: #2c1a0c;
+        }
+
+        /* overlay lembut untuk memastikan keterbacaan di atas tekstur */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(245, 235, 220, 0.82);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* container utama */
+        .canvas-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 252, 245, 0.92);
+            border-radius: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(1px);
+            overflow: hidden;
+            padding: 1.8rem 2rem 2rem 2rem;
+            transition: all 0.2s;
+        }
+
+        /* header judul & brand */
+        .brand-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 3px solid #c57f3e;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .brand-header h1 {
+            font-size: 2.5rem;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #4a2c1a, #b4622a);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            display: inline-block;
+            margin-bottom: 0.25rem;
+        }
+
+        .brand-header p {
+            color: #6b3e1c;
+            font-weight: 500;
+            margin-top: 0.25rem;
+            font-size: 1.1rem;
+        }
+
+        .kopi-badge {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .kopi-badge span {
+            background: #e7d9c7;
+            padding: 0.2rem 1rem;
+            border-radius: 40px;
+            color: #5a2e12;
+        }
+
+        /* Layout grid BMC : 5 kolom? tapi model canvas klasik 9 blok, kita pakai grid fleksibel */
+        /* Menggunakan CSS Grid agar rapi seperti gambar referensi (persis seperti BMC) */
+        .bmc-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 1.6fr 1.2fr;
+            gap: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* bagian kanan & kiri spesial */
+        .left-col {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .middle-col {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .right-col {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        /* kartu BMC */
+        .bmc-card {
+            background: white;
+            border-radius: 1.2rem;
+            padding: 1.2rem 1rem;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f0e2d2;
+            transition: transform 0.2s ease, box-shadow 0.2s;
+        }
+
+        .bmc-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px -12px rgba(0, 0, 0, 0.2);
+            border-color: #dba46a;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            border-left: 6px solid #c06d2e;
+            padding-left: 12px;
+            color: #3e2413;
+            letter-spacing: -0.2px;
+        }
+
+        .card-content {
+            font-size: 0.92rem;
+            line-height: 1.45;
+            color: #2c241c;
+        }
+
+        .card-content ul, .card-content p {
+            margin-bottom: 0.5rem;
+        }
+
+        .card-content li {
+            margin-left: 1.2rem;
+            margin-bottom: 0.3rem;
+        }
+
+        /* section bawah (channel & customer relationships bisa diatur lebih simetris) */
+        .bottom-row {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr 1fr;
+            gap: 1.2rem;
+            margin-top: 0.2rem;
+        }
+
+        /* cost & revenue double kolom */
+        .double-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+            margin-top: 1.2rem;
+        }
+
+        /* tampilan responsive */
+        @media (max-width: 950px) {
+            body {
+                padding: 1rem;
+            }
+            .canvas-container {
+                padding: 1.2rem;
+            }
+            .bmc-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .bottom-row {
+                grid-template-columns: 1fr;
+            }
+            .double-row {
+                grid-template-columns: 1fr;
+            }
+            .brand-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* contact area */
+        .contact-section {
+            margin-top: 2.2rem;
+            background: #2c2418;
+            border-radius: 1.5rem;
+            padding: 1rem 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            color: #fef3e4;
+            background-image: linear-gradient(115deg, #2c1e12, #4d3220);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .contact-info {
+            display: flex;
+            gap: 1.8rem;
+            flex-wrap: wrap;
+            align-items: baseline;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            background: rgba(255,248,235,0.12);
+            padding: 0.4rem 1rem;
+            border-radius: 60px;
+            backdrop-filter: blur(2px);
+            font-weight: 500;
+        }
+
+        .contact-item i.emoji {
+            font-size: 1.2rem;
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));
+        }
+
+        .contact-item a {
+            color: #ffddb0;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .contact-item a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .brand-note {
+            font-size: 0.85rem;
+            font-style: italic;
+            letter-spacing: 0.3px;
+        }
+
+        hr {
+            margin: 0.5rem 0;
+            border-color: #dbbc94;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            margin-top: 1rem;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+
+<div class="canvas-container">
+    <div class="brand-header">
+        <h1>☕ BISNIS MODEL CANVAS</h1>
+        <p>✨ KOPI BUBUK NUSANTARA — Cita Rasa Asli, Keharuman Menggoda ✨</p>
+        <div class="kopi-badge">
+            <span>✔ 100% Arabika & Robusta Pilihan</span>
+            <span>✔ Bubuk Halus & Premium</span>
+            <span>✔ Tanpa Pengawet</span>
+        </div>
+    </div>
+
+    <!-- BLOCK UTAMA BMC sesuai standar 9 blok -->
+    <div class="bmc-grid">
+        <!-- Kolom kiri : Key Partners, Key Activities, Key Resources -->
+        <div class="left-col">
+            <div class="bmc-card">
+                <div class="card-title">🤝 Key Partners</div>
+                <div class="card-content">
+                    <ul>
+                        <li>Petani kopi lokal (Gayo, Toraja, Kintamani)</li>
+                        <li>Pabrik penggilingan biji kopi terintegrasi</li>
+                        <li>Platform logistik (JNE, SiCepat)</li>
+                        <li>Komunitas barista & coffee enthusiast</li>
+                        <li>Supplier kemasan aluminium foil & standing pouch</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="bmc-card">
+                <div class="card-title">⚙️ Key Activities</div>
+                <div class="card-content">
+                    <ul>
+                        <li>Sortasi & roasting biji kopi (medium-dark)</li>
+                        <li>Penggilingan menjadi bubuk halus/sedang</li>
+                        <li>Pengemasan & quality control</li>
+                        <li>Pemasaran digital & promo seasonal</li>
+                        <li>Distribusi ke reseller & end customer</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="bmc-card">
+                <div class="card-title">📦 Key Resources</div>
+                <div class="card-content">
+                    <ul>
+                        <li>Mesin roasting & grinder profesional</li>
+                        <li>Gudang penyimpanan dengan kontrol suhu</li>
+                        <li>Tim ahli roasting (certified)</li>
+                        <li>Merek dagang & sertifikasi halal</li>
+                        <li>Platform e-commerce & website</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kolom tengah : Value Propositions, Customer Relationships, Channels -->
+        <div class="middle-col">
+            <div class="bmc-card">
+                <div class="card-title">💎 Value Propositions</div>
+                <div class="card-content">
+                    <ul>
+                        <li>Kopi bubuk aroma khas & rasa balanced</li>
+                        <li>Kesegaran terjaga (roasted to order)</li>
+                        <li>Varian: Premium, Signature Blend, Decaf</li>
+                        <li>Kemasan kekinian & praktis (zip lock)</li>
+                        <li>Harga bersaing, kualitas kafe</li>
+                        <li>Gratis stiker & panduan seduh</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="bmc-card">
+                <div class="card-title">❤️ Customer Relationships</div>
+                <div class="card-content">
+                    <ul>
+                        <li>Komunitas "Kopi Nusantara" di WhatsApp & IG</li>
+                        <li>Program loyalitas (poin setiap belanja)</li>
+                        <li>CS ramah & fast response via chat</li>
+                        <li>Survey kepuasan & custom blend request</li>
+                        <li>Konten edukasi brewing tips</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="bmc-card">
+                <div class="card-title">📢 Channels</div>
+                <div class="card-content">
+                    <ul>
+                        <li>Marketplace (Tokopedia, Shopee Official)</li>
+                        <li>Website sendiri (e-commerce)</li>
+                        <li>Instagram & TikTok (konten + live)</li>
+                        <li>Reseller & coffee shop partners</li>
+                        <li>Event bazaar & kopi expo</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kolom kanan : Customer Segments -->
+        <div class="right-col">
+            <div class="bmc-card">
+                <div class="card-title">👥 Customer Segments</div>
+                <div class="card-content">
+                    <ul>
+                        <li>Pecinta kopi rumahan (home brewer)</li>
+                        <li>Office & coworking space (kebutuhan harian)</li>
+                        <li>Cafe & kedai kopi skala kecil</li>
+                        <li>Generasi Z & milenial penggemar kopi kekinian</li>
+                        <li>Pelaku UMKM yang butuh kopi bubuk curah</li>
+                    </ul>
+                    <p style="margin-top: 8px; font-weight:500;">🎯 Persona: "Ahmad, 28 tahun, pekerja IT yang ingin nikmati kopi enak tanpa ribet"</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bagian bawah: Customer Relationships sudah di atas, tetapi untuk estetika kita tambah channel + bottom -->
+    <div class="bottom-row">
+        <!-- Sebenarnya sudah tercantum semua, tapi biar mirip gambar lengkap: kita gabung cost structure & revenue streams di double row bawah-->
+    </div>
+
+    <!-- Cost & Revenue streams - dua pilar penting -->
+    <div class="double-row">
+        <div class="bmc-card">
+            <div class="card-title">💰 Cost Structure</div>
+            <div class="card-content">
+                <ul>
+                    <li>Bahan baku biji kopi (40%)</li>
+                    <li>Operasional roasting & packing (20%)</li>
+                    <li>Marketing & platform fee (15%)</li>
+                    <li>Logistik & gudang (15%)</li>
+                    <li>Tenaga ahli & sertifikasi (10%)</li>
+                </ul>
+                <p><strong>🔻 Efisiensi:</strong> Kerja sama langsung petani mengurangi biaya perantara.</p>
+            </div>
+        </div>
+        <div class="bmc-card">
+            <div class="card-title">💸 Revenue Streams</div>
+            <div class="card-content">
+                <ul>
+                    <li>Penjualan kopi bubuk (kemasan 200gr, 500gr, 1kg)</li>
+                    <li>Paket langganan bulanan (subscribe & save)</li>
+                    <li>Kerjasama B2B (kafe & hotel)</li>
+                    <li>Merchandise (coffee tools, tumbler, apron)</li>
+                    <li>Kelas brewing online & workshop</li>
+                </ul>
+                <p><strong>📈 Proyeksi:</strong> Margin 35%-45% per produk.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Informasi kontak + nomor hp & email persis permintaan -->
+    <div class="contact-section">
+        <div class="contact-info">
+            <div class="contact-item">
+                <span class="emoji">📞</span>
+                <a href="tel:+6285269253478">+62 852-6925-3478</a>
+            </div>
+            <div class="contact-item">
+                <span class="emoji">✉️</span>
+                <a href="mailto:amrymhmmd098@gmail.com">amrymhmmd098@gmail.com</a>
+            </div>
+            <div class="contact-item">
+                <span class="emoji">🕒</span>
+                <span>Senin - Sabtu | 08.00 - 21.00 WIB</span>
+            </div>
+        </div>
+        <div class="brand-note">
+            🌟 "Dari petani untuk penikmat sejati"
+        </div>
+    </div>
+    <footer>
+        © 2025 Kopi Bubuk Nusantara — Business Model Canvas | Freshly Ground & Authentic Taste
+    </footer>
+</div>
+
+<!-- Penjelasan: Background diambil dari online "coffee.png" pada transparenttextures.com, plus fallback warna earthy -->
+<!-- Semua blok BMC terlihat lengkap seperti gambar yang diminta, mencantumkan detail kopi bubuk, nomor hp dan email sesuai -->
+</body>
+</html>
